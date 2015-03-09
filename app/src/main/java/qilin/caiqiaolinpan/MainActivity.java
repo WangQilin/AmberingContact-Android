@@ -23,9 +23,13 @@ public class MainActivity extends ActionBarActivity {
     public void btnOnclick(View v) {
         EditText et_name = (EditText) findViewById(R.id.et_name);
         String name = et_name.getText().toString();
+
         Intent intent = new Intent(this, PersonalDetail.class);
         intent.putExtra("name", name);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+
+        overridePendingTransition(R.anim.pull_in_from_left,);
     }
 
 
