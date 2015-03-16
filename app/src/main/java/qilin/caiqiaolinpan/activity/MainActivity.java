@@ -11,7 +11,6 @@ import qilin.caiqiaolinpan.R;
 
 public class MainActivity extends Activity {
     private long lastBackPressTime = 0;
-    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

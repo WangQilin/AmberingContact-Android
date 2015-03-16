@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">相亲相爱一家人</string>
+    <string name="app_name">CaiqiaoLinpan</string>
     <string name="label_name">Name: </string>
     <string name="title_activity_personal_detail">PersonalDetail</string>
     <string name="action_settings">Settings</string>
