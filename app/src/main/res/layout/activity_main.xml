@@ -1,21 +1,22 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@drawable/family_background"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
 
-    <EditText
-        android:id="@+id/et_name"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="enter your name here" />
+		android:gravity="center"
+        android:text="点击可选择打电话或发短信"
+        android:textColor="#842B00"
+        android:textSize="24sp" />
 
-    <Button
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="click me!"
-        android:onClick="btnOnclick" />
+    <ListView
+        android:id="@+id/lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+</LinearLayout>

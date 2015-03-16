@@ -6,33 +6,38 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
+/**
+ * Created by WangQilin on 3/3/15.
+ */
 
-public class PersonalDetail extends ActionBarActivity {
+public class MainActivity_test extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_detail);
-
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        TextView tv_name = (TextView) findViewById(R.id.tv_name);
-        tv_name.setText(name);
+        setContentView(R.layout.main);
     }
 
-    public void goBack(View v) {
-        Intent intent = new Intent(this, MainActivity_test.class);
+    public void btnOnclick(View v) {
+        EditText et_name = (EditText) findViewById(R.id.et_name);
+        String name = et_name.getText().toString();
+
+        Intent intent = new Intent(this, PersonalDetail.class);
+        intent.putExtra("name", name);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+
+        // todo: research animation
+//        overridePendingTransition(R.anim.pull_in_from_left,);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_personal_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 

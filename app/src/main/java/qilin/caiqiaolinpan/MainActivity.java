@@ -1,58 +1,146 @@
 package qilin.caiqiaolinpan;
 
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * Created by WangQilin on 3/3/15.
- */
+public class MainActivity extends Activity {
+	private long lastPressTime = 0;
+	private ListView lv;
 
-public class MainActivity extends ActionBarActivity {
+    // todo: add in profile pic
+	int[] imgs = { R.drawable.profile_wangxinggui,
+			R.drawable.profile_zhongbingcui, R.drawable.profile_wangbei,
+			R.drawable.profile_zhongbingfeng, R.drawable.profile_zhongbingfeng,
+			R.drawable.profile_xiaojun, R.drawable.profile_zhongli,
+			R.drawable.profile_wangkaifeng, R.drawable.profile_wangjing,
+			R.drawable.profile_wangqilin, R.drawable.profile_zhongkehang };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
+    // todo: SQLite names & numbers
+	String[] names = { };
+	String[] numbers = {  };
 
-    public void btnOnclick(View v) {
-        EditText et_name = (EditText) findViewById(R.id.et_name);
-        String name = et_name.getText().toString();
+	MyAdapter adapter = null;
 
-        Intent intent = new Intent(this, PersonalDetail.class);
-        intent.putExtra("name", name);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
+	private ListView.OnItemClickListener listener = new ListView.OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View v, int position,
+				long id) {
+			final String number = numbers[position];
 
-        // todo: research animation
-        overridePendingTransition(R.anim.pull_in_from_left,);
-    }
+			new AlertDialog.Builder(MainActivity.this)
+					.setTitle("ѡ�����:")
+					.setNegativeButton("��绰",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									Uri uri = Uri.parse("tel:" + number);
+									Intent intent = new Intent(Intent.ACTION_CALL, uri);
+									startActivity(intent);
+								}
+							})
+					.setNeutralButton("������",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									Uri uri = Uri.parse("smsto://" + number);
+									Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+									startActivity(intent);
+								}
+							})
+					.setPositiveButton("ȡ��",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+								}
+							})
+					.show();
+		}
+	};
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+		lv = (ListView) findViewById(R.id.lv);
+		adapter = new MyAdapter(this);
+		lv.setAdapter(adapter);
+		lv.setOnItemClickListener(listener);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+	@Override
+	public void onBackPressed() {
+		if (System.currentTimeMillis() - lastPressTime <= 1000) {
+			finish();
+		} else {
+			lastPressTime = System.currentTimeMillis();
+			Toast.makeText(getApplicationContext(), "�ٰ�һ���˳�",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+	public class MyAdapter extends BaseAdapter {
+		private LayoutInflater myInflater;
 
-        return super.onOptionsItemSelected(item);
-    }
+		public MyAdapter(Context c) {
+			myInflater = LayoutInflater.from(c);
+		}
+
+		@Override
+		public int getCount() {
+			return names.length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return names[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			convertView = myInflater.inflate(R.layout.lv_personal_detail, null);
+
+			TextView tv_name = (TextView) convertView
+					.findViewById(R.id.tv_name);
+			TextView tv_number = (TextView) convertView
+					.findViewById(R.id.tv_number);
+			ImageView img = (ImageView) convertView.findViewById(R.id.img);
+
+			img.setImageResource(imgs[position]);
+			tv_name.setText(names[position]);
+			tv_number.setText(numbers[position]);
+
+			return convertView;
+		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return super.onOptionsItemSelected(item);
+	}
 }
