@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
 
+        // todo: research animation
         overridePendingTransition(R.anim.pull_in_from_left,);
     }
 
