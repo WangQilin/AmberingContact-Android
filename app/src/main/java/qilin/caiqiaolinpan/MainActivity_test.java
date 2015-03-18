@@ -26,7 +26,6 @@ public class MainActivity_test extends ActionBarActivity {
 
         Intent intent = new Intent(this, PersonalDetail.class);
         intent.putExtra("name", name);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
 
         // todo: research animation

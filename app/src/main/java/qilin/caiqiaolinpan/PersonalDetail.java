@@ -24,7 +24,6 @@ public class PersonalDetail extends ActionBarActivity {
 
     public void goBack(View v) {
         Intent intent = new Intent(this, MainActivity_test.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 
