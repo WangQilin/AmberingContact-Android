@@ -11,14 +11,14 @@ import android.util.Log;
 public class DatabaseManager extends SQLiteOpenHelper {
     private static final String TAG = DatabaseManager.class.getName();
 
-    private static final String DB_NAME = "contact_db";
-    private static final String TABLE_NAME = "contact_table";
+    private static final String DB_NAME = "contact db";
+    private static final String TABLE_NAME = "contact table";
     private static final int DB_VERSION = 1;
-    private static final String COLUMN_UID = "user_id";
+    private static final String COLUMN_UID = "user id";
     private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_DOB = "date_of_birth";
-    private static final String COLUMN_PHONE = "phone_number";
-    private static final String COLUMN_DATE_ADDED = "date_added";
+    private static final String COLUMN_DOB = "date of birth";
+    private static final String COLUMN_PHONE = "phone number";
+    private static final String COLUMN_DATE_ADDED = "date added";
 
     // SQLite statement to create a table
     private static final String DB_CREATE = "create table " + TABLE_NAME + "("
