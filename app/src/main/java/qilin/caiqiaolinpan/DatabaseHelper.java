@@ -8,17 +8,18 @@ import android.util.Log;
 /**
  * Created by qilwang on 3/23/15.
  */
-public class DatabaseManager extends SQLiteOpenHelper {
-    private static final String TAG = DatabaseManager.class.getName();
+public class DatabaseHelper extends SQLiteOpenHelper {
+    private static final String TAG = DatabaseHelper.class.getName();
 
     private static final String DB_NAME = "contact db";
-    private static final String TABLE_NAME = "contact table";
     private static final int DB_VERSION = 1;
-    private static final String COLUMN_UID = "user id";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_DOB = "date of birth";
-    private static final String COLUMN_PHONE = "phone number";
-    private static final String COLUMN_DATE_ADDED = "date added";
+
+    public static final String TABLE_NAME = "contact table";
+    public static final String COLUMN_UID = "user id";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_DOB = "date of birth";
+    public static final String COLUMN_PHONE = "phone number";
+    public static final String COLUMN_DATE_ADDED = "date added";
 
     // SQLite statement to create a table
     private static final String DB_CREATE = "create table " + TABLE_NAME + "("
@@ -28,7 +29,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + COLUMN_PHONE + " text, "
             + COLUMN_DATE_ADDED + "text);";
 
-    public DatabaseManager(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
