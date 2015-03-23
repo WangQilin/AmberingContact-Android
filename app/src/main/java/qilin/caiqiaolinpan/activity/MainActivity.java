@@ -19,8 +19,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SQLiteDatabase db = openOrCreateDatabase("db", MODE_PRIVATE, null);
-
 
     }
 

@@ -4,19 +4,25 @@
     android:layout_height="match_parent"
     android:background="@drawable/family_background"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-		android:gravity="center"
-        android:text="点击可选择打电话或发短信"
-        android:textColor="#842B00"
-        android:textSize="24sp" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:onClick="">
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/add_1" />
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
 </LinearLayout>

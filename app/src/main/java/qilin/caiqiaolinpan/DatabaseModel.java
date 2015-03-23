@@ -5,10 +5,10 @@ package qilin.caiqiaolinpan;
  */
 public class DatabaseModel {
 
-    private String userId;
+    private long userId;
     private String name;
     private String dateOfBirth;
-    private String phoneNumber;
+    private String phone;
     private String dateAdded;
 
     public String getDateAdded() {
@@ -19,12 +19,12 @@ public class DatabaseModel {
         this.dateAdded = dateAdded;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phoneNumber) {
+        this.phone = phoneNumber;
     }
 
     public String getDateOfBirth() {
@@ -43,11 +43,11 @@ public class DatabaseModel {
         this.name = name;
     }
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
