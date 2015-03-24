@@ -3,6 +3,6 @@
     <string name="label_name">Name: </string>
     <string name="title_activity_personal_detail">PersonalDetail</string>
     <string name="action_settings">Settings</string>
-
-
+    <string name="title_activity_add_contact">AddContactActivity</string>
+    <string name="label_add">add</string>
 </resources>

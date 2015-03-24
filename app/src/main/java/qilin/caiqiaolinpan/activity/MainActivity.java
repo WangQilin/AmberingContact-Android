@@ -2,8 +2,10 @@ package qilin.caiqiaolinpan.activity;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,5 +33,10 @@ public class MainActivity extends Activity {
             Toast.makeText(getApplicationContext(), "Press again to exit...",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void addContact(View v) {
+        Intent intent = new Intent(this, AddContactActivity.class);
+        startActivity(intent);
     }
 }
