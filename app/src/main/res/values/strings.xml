@@ -7,5 +7,6 @@
     <string name="label_add">add</string>
     <string name="activity_new_contact_tv_name">name:</string>
     <string name="activity_new_contact_tv_phone">phone:</string>
+    <string name="activity_new_contact_tv_dob">birthday:</string>
     <string name="activity_new_contact_bt_done">done</string>
 </resources>
