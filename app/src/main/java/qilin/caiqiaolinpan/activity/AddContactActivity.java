@@ -20,7 +20,6 @@ public class AddContactActivity extends ActionBarActivity {
     private String name;
     private String phone;
     private String dob;
-    private String dateAdded;
 
     private EditText et_new_contact_name;
     private EditText et_new_contact_phone;
@@ -49,30 +48,6 @@ public class AddContactActivity extends ActionBarActivity {
         });
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_contact, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void addContact(View v) {
-
-    }
-
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
@@ -83,6 +58,7 @@ public class AddContactActivity extends ActionBarActivity {
                         this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker dp, int year, int month, int dayOfMonth) {
                         et_new_contact_dob.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
+
                     }
                 },
                         c.get(Calendar.YEAR),
@@ -92,6 +68,12 @@ public class AddContactActivity extends ActionBarActivity {
                 break;
         }
         return dialog;
+    }
+
+    public void addContact(View v) {
+        name = et_new_contact_name.getText().toString();
+        phone = et_new_contact_phone.getText().toString();
+        dob = et_new_contact_dob.getText().toString();
     }
 
 }

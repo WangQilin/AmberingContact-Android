@@ -19,15 +19,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DOB = "date of birth";
     public static final String COLUMN_PHONE = "phone number";
-    public static final String COLUMN_DATE_ADDED = "date added";
 
     // SQLite statement to create a table
     private static final String DB_CREATE = "create table " + TABLE_NAME + "("
             + COLUMN_UID + " integer primary key autoincrement, "
             + COLUMN_NAME + " text not null, "
             + COLUMN_DOB + " text, "
-            + COLUMN_PHONE + " text, "
-            + COLUMN_DATE_ADDED + "text);";
+            + COLUMN_PHONE + " text);";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

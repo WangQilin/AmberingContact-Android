@@ -9,15 +9,6 @@ public class DatabaseModel {
     private String name;
     private String dateOfBirth;
     private String phone;
-    private String dateAdded;
-
-    public String getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(String dateAdded) {
-        this.dateAdded = dateAdded;
-    }
 
     public String getPhone() {
         return phone;

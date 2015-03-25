@@ -19,8 +19,7 @@ public class DataAccessObject {
             dbHelper.COLUMN_UID,
             dbHelper.COLUMN_NAME,
             dbHelper.COLUMN_PHONE,
-            dbHelper.COLUMN_DOB,
-            dbHelper.COLUMN_DATE_ADDED
+            dbHelper.COLUMN_DOB
     };
 
     public DataAccessObject(Context context) {
@@ -41,7 +40,6 @@ public class DataAccessObject {
         values.put(dbHelper.COLUMN_NAME, name);
         values.put(dbHelper.COLUMN_PHONE, phone);
         values.put(dbHelper.COLUMN_DOB, dob);
-        values.put(dbHelper.COLUMN_DATE_ADDED, dateAdded);
 
         long insertId = db.insert(dbHelper.TABLE_NAME, null, values);
 
@@ -78,7 +76,6 @@ public class DataAccessObject {
         dbModel.setName(cursor.getString(1));
         dbModel.setPhone(cursor.getString(2));
         dbModel.setDateOfBirth(cursor.getString(3));
-        dbModel.setDateAdded(cursor.getString(4));
         return dbModel;
     }
 }
