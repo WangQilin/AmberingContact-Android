@@ -9,4 +9,7 @@
     <string name="activity_new_contact_tv_phone">phone:</string>
     <string name="activity_new_contact_tv_dob">birthday:</string>
     <string name="activity_new_contact_bt_done">done</string>
+    <string name="title_activity_choose_avatar">ChooseAvatarActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
