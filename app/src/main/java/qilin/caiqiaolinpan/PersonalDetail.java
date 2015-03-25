@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import qilin.caiqiaolinpan.activity.MainActivity;
+
 
 public class PersonalDetail extends ActionBarActivity {
 
@@ -23,7 +25,7 @@ public class PersonalDetail extends ActionBarActivity {
     }
 
     public void goBack(View v) {
-        Intent intent = new Intent(this, MainActivity_test.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
