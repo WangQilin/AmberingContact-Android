@@ -9,22 +9,14 @@ import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private final int[] imageIds = {
-            R.drawable.profile_0, R.drawable.profile_1,
-            R.drawable.profile_2, R.drawable.profile_3,
-            R.drawable.profile_4, R.drawable.profile_5,
-            R.drawable.profile_6, R.drawable.profile_7,
-            R.drawable.profile_8, R.drawable.profile_9,
-            R.drawable.profile_10,
-    };
+    private final int[] imageIds;
 
-    private ImageView iv;
-
-    private Context context;
+    private Context mContext;
 
     // constructor
-    public ImageAdapter(Context context) {
-        this.context = context;
+    public ImageAdapter(Context context, int[] imageIds) {
+        mContext = context;
+        this.imageIds = imageIds;
     }
 
     @Override
@@ -39,14 +31,15 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return imageIds[position];
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (iv == null) {
-            iv = new ImageView(context);
-            iv.setLayoutParams(new GridView.LayoutParams(85, 85));
+        ImageView iv;
+        if (convertView == null) {
+            iv = new ImageView(mContext);
+            iv.setLayoutParams(new GridView.LayoutParams(150, 150));
             iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
             iv.setPadding(8, 8, 8, 8);
         } else {

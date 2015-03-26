@@ -55,7 +55,7 @@ public class AddContactActivity extends Activity {
         iv_choose_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddContactActivity.this, ImageAdapter.class);
+                Intent intent = new Intent(AddContactActivity.this, ChooseAvatarActivity.class);
                 startActivityForResult(intent, AVATAR);
             }
         });
