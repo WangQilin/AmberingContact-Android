@@ -1,21 +1,21 @@
 package qilin.caiqiaolinpan;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
 
     private final int[] imageIds;
 
-    private Context mContext;
+    private Context context;
 
     // constructor
     public ImageAdapter(Context context, int[] imageIds) {
-        mContext = context;
+        this.context = context;
         this.imageIds = imageIds;
     }
 
@@ -36,18 +36,17 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView iv;
+        View v;
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            iv = new ImageView(mContext);
-            iv.setLayoutParams(new GridView.LayoutParams(150, 150));
-            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            iv.setPadding(8, 8, 8, 8);
+            v = new View(context);
+            v = inflater.inflate(R.layout.choose_avatar_single_image, null);
+            ImageView i = (ImageView) v.findViewById(R.id.avatar_single_image);
+            i.setImageResource(imageIds[position]);
         } else {
-            iv = (ImageView) convertView;
+            v = convertView;
         }
 
-        iv.setImageResource(imageIds[position]);
-
-        return iv;
+        return v;
     }
 }
