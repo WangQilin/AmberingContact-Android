@@ -13,7 +13,6 @@ import android.widget.ImageView;
 
 import java.util.Calendar;
 
-import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
 public class AddContactActivity extends Activity {
@@ -97,5 +96,4 @@ public class AddContactActivity extends Activity {
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
     }
-
 }

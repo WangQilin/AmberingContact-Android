@@ -3,10 +3,8 @@ package qilin.caiqiaolinpan.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import qilin.caiqiaolinpan.R;
@@ -20,8 +18,6 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
     }
 
     @Override
