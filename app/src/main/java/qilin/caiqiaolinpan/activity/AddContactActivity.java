@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +33,10 @@ public class AddContactActivity extends Activity {
 
     private final static int DATE_DIALOG = 1;
     private final static int AVATAR = 1;
+
+    // result code
+    private final static int SYSTEM_AVATAR = 1;
+    private final static int USER_DEFINED_AVATAR = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +71,22 @@ public class AddContactActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle bundle = data.getExtras();
-        int imageId = bundle.getInt("imageId");
-        iv_choose_avatar.setImageResource(imageId);
+
+        switch (requestCode) {
+            case SYSTEM_AVATAR:
+                iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
+                break;
+            case USER_DEFINED_AVATAR:
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap photo = extras.getParcelable("data");
+                    Drawable drawable = new BitmapDrawable(photo);
+                    iv_choose_avatar.setImageDrawable(drawable);
+                }
+                break;
+            default:
+                iv_choose_avatar.setImageResource(R.drawable.profile_1);
+        }
     }
 
     @Override

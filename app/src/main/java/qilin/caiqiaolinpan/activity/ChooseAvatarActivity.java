@@ -20,7 +20,6 @@ import java.io.File;
 
 import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
-import qilin.caiqiaolinpan.Tools;
 
 public class ChooseAvatarActivity extends Activity {
 
@@ -42,15 +41,20 @@ public class ChooseAvatarActivity extends Activity {
     private GridView gv;
 
     // avatar name
-    private static final String IMAGE_FILE_NAME = "avatar.jpg";
+    private final static String IMAGE_FILE_NAME = "avatar.jpg";
 
     // request codes
-    private static final int IMAGE_REQUEST_CODE = 0;
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int RESULT_REQUEST_CODE = 2;
+    private final static int IMAGE_REQUEST_CODE = 0;
+    private final static int CAMERA_REQUEST_CODE = 1;
+    private final static int RESULT_REQUEST_CODE = 2;
+
+    // result code
+    private final static int SYSTEM_AVATAR = 1;
+    private final static int USER_DEFINED_AVATAR = 2;
 
     // strings of the alert window
     String[] items = new String[]{"choose from galary", "take a photo"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +67,13 @@ public class ChooseAvatarActivity extends Activity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // if the take_a_photo pic is pressed, allow user to take a photo and set as avatar
                 if (position == 0) {
-//                    if the take_a_photo pic is pressed, allow user to take a photo and set as avatar
                     showDialog();
                 } else {
                     Intent intent = new Intent();
                     intent.putExtra("imageId", imageIds[position]);
-                    setResult(1, intent);
+                    setResult(SYSTEM_AVATAR, intent);
                     finish();
                 }
 
@@ -87,65 +91,57 @@ public class ChooseAvatarActivity extends Activity {
                         switch (which) {
                             case 0:
                                 Intent intentFromGallery = new Intent();
-                                intentFromGallery.setType("image/*"); // 设置文件类型
-                                intentFromGallery
-                                        .setAction(Intent.ACTION_GET_CONTENT);
-                                startActivityForResult(intentFromGallery,
-                                        IMAGE_REQUEST_CODE);
+                                intentFromGallery.setType("image/*");
+                                intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                                 break;
                             case 1:
-
-                                Intent intentFromCapture = new Intent(
-                                        MediaStore.ACTION_IMAGE_CAPTURE);
-                                // 判断存储卡是否可以用，可用进行存储
-                                if (Tools.hasSdcard()) {
-
+                                Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                // check if memory card is applicable for image storage
+                                if (hasSdcard()) {
                                     intentFromCapture.putExtra(
                                             MediaStore.EXTRA_OUTPUT,
-                                            Uri.fromFile(new File(Environment
-                                                    .getExternalStorageDirectory(),
-                                                    IMAGE_FILE_NAME)));
+                                            Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
                                 }
-
-                                startActivityForResult(intentFromCapture,
-                                        CAMERA_REQUEST_CODE);
+                                startActivityForResult(intentFromCapture, CAMERA_REQUEST_CODE);
                                 break;
                         }
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).show();
-
+                })
+                .show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //结果码不等于取消时候
         if (resultCode != RESULT_CANCELED) {
 
             switch (requestCode) {
+                // choose pic from galary
                 case IMAGE_REQUEST_CODE:
                     startPhotoZoom(data.getData());
                     break;
+
+                // take a pic
                 case CAMERA_REQUEST_CODE:
-                    if (Tools.hasSdcard()) {
-                        File tempFile = new File(
-                                Environment.getExternalStorageDirectory()
-                                        + IMAGE_FILE_NAME);
+                    if (hasSdcard()) {
+                        File tempFile = new File(Environment.getExternalStorageDirectory() + IMAGE_FILE_NAME);
                         startPhotoZoom(Uri.fromFile(tempFile));
                     } else {
-                        Toast.makeText(ChooseAvatarActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChooseAvatarActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
                     }
-
                     break;
+
                 case RESULT_REQUEST_CODE:
                     if (data != null) {
-                        getImageToView(data);
+                        // 保存裁剪之后的图片数据
+                        setResult(USER_DEFINED_AVATAR, data);
+                        finish();
                     }
                     break;
             }
@@ -155,8 +151,6 @@ public class ChooseAvatarActivity extends Activity {
 
     /**
      * 裁剪图片方法实现
-     *
-     * @param uri
      */
     public void startPhotoZoom(Uri uri) {
 
@@ -174,15 +168,12 @@ public class ChooseAvatarActivity extends Activity {
         startActivityForResult(intent, 2);
     }
 
-    /**
-     * 保存裁剪之后的图片数据
-     */
-    private void getImageToView(Intent data) {
-        Bundle extras = data.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            Drawable drawable = new BitmapDrawable(photo);
-//            faceImage.setImageDrawable(drawable);
+    private static boolean hasSdcard(){
+        String state = Environment.getExternalStorageState();
+        if(state.equals(Environment.MEDIA_MOUNTED)){
+            return true;
+        }else{
+            return false;
         }
     }
 }
