@@ -55,7 +55,6 @@ public class ChooseAvatarActivity extends Activity {
     // strings of the alert window
     String[] items = new String[]{"choose from galary", "take a photo"};
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,12 +75,11 @@ public class ChooseAvatarActivity extends Activity {
                     setResult(SYSTEM_AVATAR, intent);
                     finish();
                 }
-
             }
         });
     }
 
-    // show dialog, allow the user to choose from galary or take a picture
+    // show dialog, allow the user to choose from gallery or take a picture
     private void showDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("choose profile picture")
@@ -89,13 +87,13 @@ public class ChooseAvatarActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
-                            case 0:
+                            case IMAGE_REQUEST_CODE:
                                 Intent intentFromGallery = new Intent();
                                 intentFromGallery.setType("image/*");
                                 intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
                                 startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                                 break;
-                            case 1:
+                            case CAMERA_REQUEST_CODE:
                                 Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
@@ -122,7 +120,7 @@ public class ChooseAvatarActivity extends Activity {
         if (resultCode != RESULT_CANCELED) {
 
             switch (requestCode) {
-                // choose pic from galary
+                // choose pic from gallery
                 case IMAGE_REQUEST_CODE:
                     startPhotoZoom(data.getData());
                     break;
@@ -139,7 +137,7 @@ public class ChooseAvatarActivity extends Activity {
 
                 case RESULT_REQUEST_CODE:
                     if (data != null) {
-                        // 保存裁剪之后的图片数据
+                        // save the image cropped
                         setResult(USER_DEFINED_AVATAR, data);
                         finish();
                     }
@@ -149,19 +147,17 @@ public class ChooseAvatarActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * 裁剪图片方法实现
-     */
+    // crop picture
     public void startPhotoZoom(Uri uri) {
 
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
-        // 设置裁剪
+        // set to crop
         intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例
+        // aspectX aspectY is the ratio of width & height
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        // outputX outputY 是裁剪图片宽高
+        // outputX outputY are pic's width and height in dp?
         intent.putExtra("outputX", 320);
         intent.putExtra("outputY", 320);
         intent.putExtra("return-data", true);
