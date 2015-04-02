@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +20,8 @@ import java.io.File;
 import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
+
+// todo: onBackpress on this page, app crashes, find a way to store the profile image
 public class ChooseAvatarActivity extends Activity {
 
     private String TAG = this.getClass().getName();
@@ -40,6 +43,8 @@ public class ChooseAvatarActivity extends Activity {
 
     // avatar name
     private final static String IMAGE_FILE_NAME = "avatar.jpg";
+    private static final String IMAGE_FILE_LOCATION = "file:///sdcard/avatar.jpg";
+    private static final Uri imageUri = Uri.parse(IMAGE_FILE_LOCATION);//The Uri to store the big bitmap
 
     // request codes
     private final static int IMAGE_REQUEST_CODE = 0;
@@ -99,8 +104,7 @@ public class ChooseAvatarActivity extends Activity {
                                 Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
-                                    intentFromCapture.putExtra(
-                                            MediaStore.EXTRA_OUTPUT,
+                                    intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT,
                                             Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
                                 }
                                 startActivityForResult(intentFromCapture, CAMERA_REQUEST_CODE);
@@ -128,9 +132,9 @@ public class ChooseAvatarActivity extends Activity {
                     break;
                 // take a pic
                 case CAMERA_REQUEST_CODE:
-                    Log.i(TAG, "got photo from camera, about to start cropping");
                     if (hasSdcard()) {
                         File tempFile = new File(Environment.getExternalStorageDirectory() + IMAGE_FILE_NAME);
+                        Log.i(TAG, "got photo from camera, about to start cropping");
                         startPhotoZoom(Uri.fromFile(tempFile));
                     } else {
                         Toast.makeText(ChooseAvatarActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
@@ -152,6 +156,7 @@ public class ChooseAvatarActivity extends Activity {
     // crop picture
     public void startPhotoZoom(Uri uri) {
         Log.i(TAG, "start photo zooming");
+        Log.i(TAG, uri.toString());
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         // set to crop
@@ -160,9 +165,13 @@ public class ChooseAvatarActivity extends Activity {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // outputX outputY are pic's width and height in dp?
-        intent.putExtra("outputX", 320);
-        intent.putExtra("outputY", 320);
-        intent.putExtra("return-data", true);
+        intent.putExtra("outputX", 300);
+        intent.putExtra("outputY", 300);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra("noFaceDetection", true);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("return-data", false);
+        // todo: can't load image when taking photo
         startActivityForResult(intent, 2);
     }
 
@@ -173,5 +182,11 @@ public class ChooseAvatarActivity extends Activity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
