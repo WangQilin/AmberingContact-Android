@@ -34,6 +34,7 @@ public class AddContactActivity extends Activity {
 
     private Calendar c;
 
+    // request code
     private final static int DATE_DIALOG = 1;
     private final static int AVATAR = 1;
 
@@ -76,7 +77,8 @@ public class AddContactActivity extends Activity {
         Log.i(TAG, "got result");
         Bundle bundle = data.getExtras();
 
-        switch (requestCode) {
+        // fixed bug: previously switch(requestCode).....sigh...
+        switch (resultCode) {
             case SYSTEM_AVATAR:
                 iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
                 Log.i(TAG, "set system avatar");

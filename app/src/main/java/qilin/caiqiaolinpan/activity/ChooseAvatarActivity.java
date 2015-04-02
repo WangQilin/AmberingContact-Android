@@ -140,6 +140,7 @@ public class ChooseAvatarActivity extends Activity {
                 case RESULT_REQUEST_CODE:
                     if (data != null) {
                         // save the image cropped
+                        Log.i(TAG, "finish cropping, about to get back to AddContactActivity...");
                         setResult(USER_DEFINED_AVATAR, data);
                         finish();
                     }
