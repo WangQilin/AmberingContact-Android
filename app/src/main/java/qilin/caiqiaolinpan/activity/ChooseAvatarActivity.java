@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -22,6 +20,8 @@ import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
 public class ChooseAvatarActivity extends Activity {
+
+    private String TAG = this.getClass().getName();
 
     private final int[] imageIds = {
             R.drawable.take_a_photo,
@@ -38,8 +38,6 @@ public class ChooseAvatarActivity extends Activity {
             R.drawable.profile_10,
     };
 
-    private GridView gv;
-
     // avatar name
     private final static String IMAGE_FILE_NAME = "avatar.jpg";
 
@@ -53,7 +51,7 @@ public class ChooseAvatarActivity extends Activity {
     private final static int USER_DEFINED_AVATAR = 2;
 
     // strings of the alert window
-    String[] items = new String[]{"choose from galary", "take a photo"};
+    String[] items = new String[]{"choose from gallery", "take a photo"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +59,20 @@ public class ChooseAvatarActivity extends Activity {
         setContentView(R.layout.activity_choose_avatar);
 
         ImageAdapter adapter = new ImageAdapter(ChooseAvatarActivity.this, imageIds);
-        gv = (GridView) findViewById(R.id.gv);
+        GridView gv = (GridView) findViewById(R.id.gv);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // if the take_a_photo pic is pressed, allow user to take a photo and set as avatar
                 if (position == 0) {
+                    Log.i(TAG, "user chose to use a self-defined pic as avatar");
                     showDialog();
                 } else {
                     Intent intent = new Intent();
                     intent.putExtra("imageId", imageIds[position]);
                     setResult(SYSTEM_AVATAR, intent);
+                    Log.i(TAG, "user chose a system pic as avatar");
                     finish();
                 }
             }
@@ -82,18 +82,20 @@ public class ChooseAvatarActivity extends Activity {
     // show dialog, allow the user to choose from gallery or take a picture
     private void showDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("choose profile picture")
+                .setTitle(R.string.activity_choose_avatar_popup_title)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case IMAGE_REQUEST_CODE:
+                                Log.i(TAG, "user chose to choose from gallery");
                                 Intent intentFromGallery = new Intent();
                                 intentFromGallery.setType("image/*");
                                 intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
                                 startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                                 break;
                             case CAMERA_REQUEST_CODE:
+                                Log.i(TAG, "user chose to take a photo");
                                 Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
@@ -118,15 +120,15 @@ public class ChooseAvatarActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_CANCELED) {
-
             switch (requestCode) {
                 // choose pic from gallery
                 case IMAGE_REQUEST_CODE:
+                    Log.i(TAG, "got photo from gallery, about to start cropping");
                     startPhotoZoom(data.getData());
                     break;
-
                 // take a pic
                 case CAMERA_REQUEST_CODE:
+                    Log.i(TAG, "got photo from camera, about to start cropping");
                     if (hasSdcard()) {
                         File tempFile = new File(Environment.getExternalStorageDirectory() + IMAGE_FILE_NAME);
                         startPhotoZoom(Uri.fromFile(tempFile));
@@ -144,12 +146,11 @@ public class ChooseAvatarActivity extends Activity {
                     break;
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // crop picture
     public void startPhotoZoom(Uri uri) {
-
+        Log.i(TAG, "start photo zooming");
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         // set to crop
@@ -164,11 +165,11 @@ public class ChooseAvatarActivity extends Activity {
         startActivityForResult(intent, 2);
     }
 
-    private static boolean hasSdcard(){
+    private static boolean hasSdcard() {
         String state = Environment.getExternalStorageState();
-        if(state.equals(Environment.MEDIA_MOUNTED)){
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

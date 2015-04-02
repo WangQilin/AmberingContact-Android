@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Family</string>
+    <string name="app_name">family</string>
     <string name="label_name">Name: </string>
     <string name="title_activity_personal_detail">PersonalDetail</string>
     <string name="action_settings">Settings</string>
@@ -10,6 +10,8 @@
     <string name="activity_new_contact_tv_dob">birthday:</string>
     <string name="activity_new_contact_bt_done">done</string>
     <string name="title_activity_choose_avatar">ChooseAvatarActivity</string>
+    <string name="activity_choose_avatar_popup_title">choose profile picture</string>
+
 
     <string name="hello_world">Hello world!</string>
 </resources>

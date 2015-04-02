@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
@@ -19,6 +20,8 @@ import java.util.Calendar;
 import qilin.caiqiaolinpan.R;
 
 public class AddContactActivity extends Activity {
+
+    private String TAG = this.getClass().getName();
 
     private String name;
     private String phone;
@@ -70,11 +73,13 @@ public class AddContactActivity extends Activity {
     // from ChooseAvatarActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "got result");
         Bundle bundle = data.getExtras();
 
         switch (requestCode) {
             case SYSTEM_AVATAR:
                 iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
+                Log.i(TAG, "set system avatar");
                 break;
             case USER_DEFINED_AVATAR:
                 Bundle extras = data.getExtras();
@@ -82,10 +87,12 @@ public class AddContactActivity extends Activity {
                     Bitmap photo = extras.getParcelable("data");
                     Drawable drawable = new BitmapDrawable(photo);
                     iv_choose_avatar.setImageDrawable(drawable);
+                    Log.i(TAG, "set self-defined avatar");
                 }
                 break;
             default:
                 iv_choose_avatar.setImageResource(R.drawable.profile_1);
+                Log.i(TAG, "set default avatar");
         }
     }
 
