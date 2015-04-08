@@ -41,10 +41,11 @@ public class ChooseAvatarActivity extends Activity {
             R.drawable.profile_10,
     };
 
-    // avatar name
-    private final static String IMAGE_FILE_NAME = "avatar.jpg";
-    private static final String IMAGE_FILE_LOCATION = "file:///sdcard/avatar.jpg";
-    private static final Uri imageUri = Uri.parse(IMAGE_FILE_LOCATION);//The Uri to store the big bitmap
+    // Uri of the photo bitmap
+    private Uri avatarUri;
+
+    // avatar file location
+    private static final String AVATAR_FILE_LOCATION = "file:///sdcard/temp.jpg";
 
     // request codes
     private final static int IMAGE_REQUEST_CODE = 0;
@@ -62,6 +63,8 @@ public class ChooseAvatarActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_avatar);
+
+        avatarUri = Uri.parse(AVATAR_FILE_LOCATION);
 
         ImageAdapter adapter = new ImageAdapter(ChooseAvatarActivity.this, imageIds);
         GridView gv = (GridView) findViewById(R.id.gv);
@@ -91,6 +94,7 @@ public class ChooseAvatarActivity extends Activity {
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent();
                         switch (which) {
                             case IMAGE_REQUEST_CODE:
                                 Log.i(TAG, "user chose to choose from gallery");
@@ -100,14 +104,20 @@ public class ChooseAvatarActivity extends Activity {
                                 startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                                 break;
                             case CAMERA_REQUEST_CODE:
-                                Log.i(TAG, "user chose to take a photo");
-                                Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                //capture a big bitmap and store it in Uri
+                                Log.i(TAG, "user chose to take a photo as avatar");
+
+                                if (avatarUri == null) {
+                                    Log.e(TAG, "avatar uri is null");
+                                }
+
+                                Intent intentFromCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
-                                    intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT,
-                                            Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
+                                    intentFromCamera.putExtra(MediaStore.EXTRA_OUTPUT, avatarUri);
                                 }
-                                startActivityForResult(intentFromCapture, CAMERA_REQUEST_CODE);
+                                startActivityForResult(intentFromCamera, CAMERA_REQUEST_CODE);
+
                                 break;
                         }
                     }
@@ -133,9 +143,8 @@ public class ChooseAvatarActivity extends Activity {
                 // take a pic
                 case CAMERA_REQUEST_CODE:
                     if (hasSdcard()) {
-                        File tempFile = new File(Environment.getExternalStorageDirectory() + IMAGE_FILE_NAME);
                         Log.i(TAG, "got photo from camera, about to start cropping");
-                        startPhotoZoom(Uri.fromFile(tempFile));
+                        startPhotoZoom(avatarUri);
                     } else {
                         Toast.makeText(ChooseAvatarActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
                     }
