@@ -5,8 +5,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -15,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import qilin.caiqiaolinpan.R;
@@ -77,18 +80,20 @@ public class AddContactActivity extends Activity {
         Log.i(TAG, "got result");
         Bundle bundle = data.getExtras();
 
-        // fixed bug: previously switch(requestCode).....sigh...
         switch (resultCode) {
             case SYSTEM_AVATAR:
                 iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
                 Log.i(TAG, "set system avatar");
                 break;
             case USER_DEFINED_AVATAR:
+                Log.i(TAG, "on USER_DEFINED_AVATAR");
                 Bundle extras = data.getExtras();
                 if (extras != null) {
-                    Bitmap photo = extras.getParcelable("data");
-                    Drawable drawable = new BitmapDrawable(photo);
-                    iv_choose_avatar.setImageDrawable(drawable);
+                    Log.i(TAG, "extras not null");
+                    Uri avatarUri = Uri.parse(extras.getString("avatarUri"));
+                    Log.i(TAG, avatarUri.toString());
+                    Bitmap avatarBitmap = decodeUriAsBitmap(avatarUri);
+                    iv_choose_avatar.setImageBitmap(avatarBitmap);
                     Log.i(TAG, "set self-defined avatar");
                 }
                 break;
@@ -125,5 +130,16 @@ public class AddContactActivity extends Activity {
         name = et_new_contact_name.getText().toString();
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
+    }
+
+    private Bitmap decodeUriAsBitmap(Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return bitmap;
     }
 }

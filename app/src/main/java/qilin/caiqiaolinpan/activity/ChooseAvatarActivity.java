@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
@@ -149,11 +151,13 @@ public class ChooseAvatarActivity extends Activity {
                         Toast.makeText(ChooseAvatarActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
                     }
                     break;
-
+                // when photo cropping finishes
                 case RESULT_REQUEST_CODE:
                     if (data != null) {
                         // save the image cropped
                         Log.i(TAG, "finish cropping, about to get back to AddContactActivity...");
+                        data.putExtra("avatarUri", avatarUri.toString());
+                        Log.i(TAG, avatarUri.toString());
                         setResult(USER_DEFINED_AVATAR, data);
                         finish();
                     }
@@ -180,8 +184,7 @@ public class ChooseAvatarActivity extends Activity {
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("return-data", false);
-        // todo: can't load image when taking photo
-        startActivityForResult(intent, 2);
+        startActivityForResult(intent, RESULT_REQUEST_CODE);
     }
 
     private static boolean hasSdcard() {
