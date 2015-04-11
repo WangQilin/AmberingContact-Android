@@ -35,6 +35,10 @@ public class AddContactActivity extends Activity {
 
     private Calendar c;
 
+    // to preserve state
+    private String ps_avatarUri;
+    private int ps_imageId = R.drawable.profile_0;
+
     // request code
     private final static int DATE_DIALOG = 1;
     private final static int AVATAR = 1;
@@ -42,9 +46,10 @@ public class AddContactActivity extends Activity {
     // result code
     private final static int SYSTEM_AVATAR = 1;
     private final static int USER_DEFINED_AVATAR = 2;
+    private final static int BACK_BUTTON_PRESSED = 3;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
@@ -52,6 +57,14 @@ public class AddContactActivity extends Activity {
         et_new_contact_phone = (EditText) findViewById(R.id.et_new_contact_phone);
         et_new_contact_dob = (EditText) findViewById(R.id.et_new_contact_dob);
         iv_choose_avatar = (ImageView) findViewById(R.id.iv_choose_avatar);
+
+        if (ps_avatarUri != null) {
+            Uri avatarUri = Uri.parse(ps_avatarUri);
+            Bitmap avatarBitmap = decodeUriToBitmap(avatarUri);
+            iv_choose_avatar.setImageBitmap(avatarBitmap);
+        } else {
+            iv_choose_avatar.setImageResource(ps_imageId);
+        }
 
         // onClickListener will only respond when user presses twice
         et_new_contact_dob.setOnTouchListener(new View.OnTouchListener() {
@@ -81,6 +94,7 @@ public class AddContactActivity extends Activity {
         switch (resultCode) {
             case SYSTEM_AVATAR:
                 iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
+                ps_imageId = bundle.getInt("imageId");
                 Log.i(TAG, "set system avatar");
                 break;
             case USER_DEFINED_AVATAR:
@@ -89,12 +103,15 @@ public class AddContactActivity extends Activity {
                 if (extras != null) {
                     Log.i(TAG, "extras not null");
                     Uri avatarUri = Uri.parse(extras.getString("avatarUri"));
+                    ps_avatarUri = avatarUri.toString();
                     Log.i(TAG, avatarUri.toString());
                     Bitmap avatarBitmap = decodeUriToBitmap(avatarUri);
                     iv_choose_avatar.setImageBitmap(avatarBitmap);
                     Log.i(TAG, "set self-defined avatar");
                 }
                 break;
+            case BACK_BUTTON_PRESSED:
+                recreate();
             default:
                 iv_choose_avatar.setImageResource(R.drawable.profile_0);
                 Log.i(TAG, "set default avatar");
@@ -139,5 +156,31 @@ public class AddContactActivity extends Activity {
             return null;
         }
         return bitmap;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        name = et_new_contact_name.getText().toString();
+        phone = et_new_contact_phone.getText().toString();
+        dob = et_new_contact_dob.getText().toString();
+
+        savedInstanceState.putString("name", name);
+        savedInstanceState.putString("phone", phone);
+        savedInstanceState.putString("dob", dob);
+        savedInstanceState.putInt("ps_imageId", ps_imageId);
+        savedInstanceState.putString("ps_avatarUri", ps_avatarUri);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        name = savedInstanceState.getString("name");
+        phone = savedInstanceState.getString("phone");
+        dob = savedInstanceState.getString("dob");
+        ps_imageId = savedInstanceState.getInt("ps_imageId");
+        ps_avatarUri = savedInstanceState.getString("ps_avatarUri");
     }
 }

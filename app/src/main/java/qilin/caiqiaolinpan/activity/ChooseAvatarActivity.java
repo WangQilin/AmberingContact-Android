@@ -53,6 +53,7 @@ public class ChooseAvatarActivity extends Activity {
     // result code
     private final static int SYSTEM_AVATAR = 1;
     private final static int USER_DEFINED_AVATAR = 2;
+    private final static int BACK_BUTTON_PRESSED = 3;
 
     // strings of the alert window
     String[] items = new String[]{"gallery", "camera"};
@@ -191,6 +192,7 @@ public class ChooseAvatarActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        setResult(BACK_BUTTON_PRESSED, null);
         finish();
     }
 }
