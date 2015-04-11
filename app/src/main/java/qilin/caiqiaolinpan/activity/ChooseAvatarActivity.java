@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,9 +15,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
@@ -26,7 +22,7 @@ import qilin.caiqiaolinpan.R;
 // todo: onBackpress on this page, app crashes, find a way to store the profile image
 public class ChooseAvatarActivity extends Activity {
 
-    private String TAG = this.getClass().getName();
+    private final String TAG = this.getClass().getName();
 
     private final int[] imageIds = {
             R.drawable.take_a_photo,
@@ -47,7 +43,7 @@ public class ChooseAvatarActivity extends Activity {
     private Uri avatarUri;
 
     // avatar file location
-    private static final String AVATAR_FILE_LOCATION = "file:///sdcard/temp.jpg";
+    private static final String AVATAR_FILE_LOCATION = "file:///sdcard/avatar.jpg";
 
     // request codes
     private final static int IMAGE_REQUEST_CODE = 0;
@@ -59,7 +55,7 @@ public class ChooseAvatarActivity extends Activity {
     private final static int USER_DEFINED_AVATAR = 2;
 
     // strings of the alert window
-    String[] items = new String[]{"choose from gallery", "take a photo"};
+    String[] items = new String[]{"gallery", "camera"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +85,13 @@ public class ChooseAvatarActivity extends Activity {
         });
     }
 
-    // show dialog, allow the user to choose from gallery or take a picture
+    // show dialog, allow the user to choose from gallery or camera
     private void showDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.activity_choose_avatar_popup_title)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        Intent intent = new Intent();
                         switch (which) {
                             case IMAGE_REQUEST_CODE:
                                 Log.i(TAG, "user chose to choose from gallery");
@@ -108,18 +103,15 @@ public class ChooseAvatarActivity extends Activity {
                             case CAMERA_REQUEST_CODE:
                                 //capture a big bitmap and store it in Uri
                                 Log.i(TAG, "user chose to take a photo as avatar");
-
                                 if (avatarUri == null) {
                                     Log.e(TAG, "avatar uri is null");
                                 }
-
                                 Intent intentFromCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
                                     intentFromCamera.putExtra(MediaStore.EXTRA_OUTPUT, avatarUri);
                                 }
                                 startActivityForResult(intentFromCamera, CAMERA_REQUEST_CODE);
-
                                 break;
                         }
                     }

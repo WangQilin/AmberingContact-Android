@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +22,7 @@ import qilin.caiqiaolinpan.R;
 
 public class AddContactActivity extends Activity {
 
-    private String TAG = this.getClass().getName();
+    private final String TAG = this.getClass().getName();
 
     private String name;
     private String phone;
@@ -74,7 +72,7 @@ public class AddContactActivity extends Activity {
         });
     }
 
-    // from ChooseAvatarActivity
+    // back from ChooseAvatarActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "got result");
@@ -92,13 +90,13 @@ public class AddContactActivity extends Activity {
                     Log.i(TAG, "extras not null");
                     Uri avatarUri = Uri.parse(extras.getString("avatarUri"));
                     Log.i(TAG, avatarUri.toString());
-                    Bitmap avatarBitmap = decodeUriAsBitmap(avatarUri);
+                    Bitmap avatarBitmap = decodeUriToBitmap(avatarUri);
                     iv_choose_avatar.setImageBitmap(avatarBitmap);
                     Log.i(TAG, "set self-defined avatar");
                 }
                 break;
             default:
-                iv_choose_avatar.setImageResource(R.drawable.profile_1);
+                iv_choose_avatar.setImageResource(R.drawable.profile_0);
                 Log.i(TAG, "set default avatar");
         }
     }
@@ -132,12 +130,12 @@ public class AddContactActivity extends Activity {
         dob = et_new_contact_dob.getText().toString();
     }
 
-    private Bitmap decodeUriAsBitmap(Uri uri) {
+    private Bitmap decodeUriToBitmap(Uri uri) {
         Bitmap bitmap = null;
         try {
             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "failed to decode Uri to Bitmap, file not found");
             return null;
         }
         return bitmap;
