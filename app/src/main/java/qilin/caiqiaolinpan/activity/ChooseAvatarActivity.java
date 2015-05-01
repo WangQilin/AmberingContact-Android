@@ -128,7 +128,9 @@ public class ChooseAvatarActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_CANCELED) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 // choose pic from gallery
                 case IMAGE_REQUEST_CODE:
