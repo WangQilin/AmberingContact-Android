@@ -15,8 +15,10 @@ import qilin.caiqiaolinpan.database.TableData.TableInfo;
 public class DatabaseOperations extends SQLiteOpenHelper {
 
     private final String TAG = this.getClass().getName();
+
     public static final int database_version = 1;
-    public String CREATE_QUERY = "CREATE TABLE " + TableInfo.TABLE_NAME + " (" + TableInfo.USER_NAME + " TEXT, " + TableInfo.PASSWORD + " Text);";
+
+    public String CREATE_QUERY = "CREATE TABLE " + TableInfo.TABLE_NAME + " (" + TableInfo.NAME + " TEXT NOT NULL, " + TableInfo.PHONE + " TEXT NOT NULL, " + TableInfo.DATEOFBIRTH + " TEXT, " + TableInfo.PROFILEPICTURE + " INT);";
 
     public DatabaseOperations(Context context) {
         super(context, TableInfo.DATABASE_NAME, null, database_version);
@@ -35,19 +37,20 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     }
 
-    public void putInformation(DatabaseOperations dop, String username, String password) {
-        // todo: investigate if there's a need to pass in dop, looks weird!
+    public void putInformation(DatabaseOperations dop, String name, String phone, String dateOfBirth, int profilePicture) {
         SQLiteDatabase sq = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(TableInfo.USER_NAME, username);
-        cv.put(TableInfo.PASSWORD, password);
+        cv.put(TableInfo.NAME, name);
+        cv.put(TableInfo.PHONE, phone);
+        cv.put(TableInfo.DATEOFBIRTH, dateOfBirth);
+        cv.put(TableInfo.PROFILEPICTURE, profilePicture);
         long result = sq.insert(TableInfo.TABLE_NAME, null, cv);
         Log.d(TAG, "One row inserted into database, result value:" + result);
     }
 
     public Cursor getInformation(DatabaseOperations dop) {
         SQLiteDatabase sq = dop.getReadableDatabase();
-        String[] columns = {TableInfo.USER_NAME, TableInfo.PASSWORD};
+        String[] columns = {TableInfo.NAME, TableInfo.PHONE, TableInfo.DATEOFBIRTH, TableInfo.PROFILEPICTURE};
         Cursor cursor = sq.query(TableInfo.TABLE_NAME, columns, null, null, null, null, null);
         return cursor;
     }
