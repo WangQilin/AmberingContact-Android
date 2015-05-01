@@ -3,6 +3,7 @@ package qilin.caiqiaolinpan.activity;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,11 +15,13 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import qilin.caiqiaolinpan.R;
+import qilin.caiqiaolinpan.database.DatabaseOperations;
 
 public class AddContactActivity extends Activity {
 
@@ -27,6 +30,7 @@ public class AddContactActivity extends Activity {
     private String name;
     private String phone;
     private String dob;
+    private int profilePicture;
 
     private EditText et_new_contact_name;
     private EditText et_new_contact_phone;
@@ -34,6 +38,8 @@ public class AddContactActivity extends Activity {
     private ImageView iv_choose_avatar;
 
     private Calendar c;
+
+    private Context context = this;
 
     // to preserve state
     private String ps_avatarUri;
@@ -145,6 +151,15 @@ public class AddContactActivity extends Activity {
         name = et_new_contact_name.getText().toString();
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
+
+        if (name.equals("")) {
+            Toast.makeText(this, "Contact name can't be null...", Toast.LENGTH_SHORT).show();
+        } else if (phone.equals("")) {
+            Toast.makeText(this, "Contact phone number can't be null...", Toast.LENGTH_SHORT).show();
+        } else {
+            DatabaseOperations dop = new DatabaseOperations(context);
+            dop.putInformation(dop, name, phone, dob, 0);
+        }
     }
 
     private Bitmap decodeUriToBitmap(Uri uri) {
