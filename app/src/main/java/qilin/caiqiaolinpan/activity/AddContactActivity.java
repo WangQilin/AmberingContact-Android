@@ -43,12 +43,16 @@ public class AddContactActivity extends Activity {
     private Context context = this;
 
     // request code
-    private final static int DATE_DIALOG_REQUEST = 1;
-    private final static int PROFILE_PICTURE_REQUEST = 2;
+    private final static int DATE_DIALOG_REQUEST = 0;
+    private final static int PROFILE_PICTURE_REQUEST = 1;
 
     // return profile picture type
-    private final static int SYSTEM_PROFILE_PICTURE = 1;
-    private final static int USER_DEFINED_PROFILE_PICTURE = 2;
+    private final static int SYSTEM_PROFILE_PICTURE = 0;
+    private final static int GALLERY_PICTURE = 1;
+    private final static int CAMERA_PICTURE = 2;
+
+    // used to get profilePictureUri from intent
+    private static final String PROFILE_PICTURE_URI = "profilePictureUri";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -87,20 +91,19 @@ public class AddContactActivity extends Activity {
         if (requestCode == PROFILE_PICTURE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Log.i(TAG, "resultCode is ok");
-
                 Bundle bundle = data.getExtras();
                 int profilePictureType = bundle.getInt("type");
-
                 switch (profilePictureType) {
                     case SYSTEM_PROFILE_PICTURE:
                         iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
                         Log.i(TAG, "set system profile_picture");
                         break;
-                    case USER_DEFINED_PROFILE_PICTURE:
+                    case GALLERY_PICTURE:
+                    case CAMERA_PICTURE:
                         Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            Uri profilePictureUri = Uri.parse(extras.getString("profilePictureUri"));
+                            Uri profilePictureUri = Uri.parse(extras.getString(PROFILE_PICTURE_URI));
                             Log.i(TAG, "profile picture uri: " + profilePictureUri.toString());
                             Bitmap profilePictureBitmap = decodeUriToBitmap(profilePictureUri);
                             if (profilePictureBitmap != null) {

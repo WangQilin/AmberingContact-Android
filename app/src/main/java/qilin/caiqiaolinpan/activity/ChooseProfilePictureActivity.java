@@ -38,7 +38,8 @@ public class ChooseProfilePictureActivity extends Activity {
     };
 
     // Uri of the photo bitmap
-    private Uri profilePictureUri;
+    private Uri cameraPictureUri;
+    private Uri galleryPictureUri;
 
     // profile picture file location
     private static final String PROFILE_PICTURE_FILE_LOCATION = "file:///sdcard/profilePicture.jpg";
@@ -46,21 +47,26 @@ public class ChooseProfilePictureActivity extends Activity {
     // request codes
     private final static int GET_GALLERY_IMAGE_REQUEST = 0;
     private final static int GET_CAMERA_IMAGE_REQUEST = 1;
-    private final static int CROP_IMAGE_REQUEST = 2;
+    private final static int CROP_GALLERY_IMAGE_REQUEST = 2;
+    private final static int CROP_CAMERA_IMAGE_REQUEST = 3;
 
     // return profile picture type
-    private final static int SYSTEM_PROFILE_PICTURE = 1;
-    private final static int USER_DEFINED_PROFILE_PICTURE = 2;
+    private final static int SYSTEM_PROFILE_PICTURE = 0;
+    private final static int GALLERY_PICTURE = 1;
+    private final static int CAMERA_PICTURE = 2;
 
     // strings of the alert window
-    String[] items = new String[]{"gallery", "camera"};
+    private String[] items = new String[]{"gallery", "camera"};
+
+    // used by AddContactActivity to get profilePictureUri from intent
+    private static final String PROFILE_PICTURE_URI = "profilePictureUri";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_profile_picture);
 
-        profilePictureUri = Uri.parse(PROFILE_PICTURE_FILE_LOCATION);
+        cameraPictureUri = Uri.parse(PROFILE_PICTURE_FILE_LOCATION);
 
         ImageAdapter adapter = new ImageAdapter(ChooseProfilePictureActivity.this, imageIds);
         GridView gv = (GridView) findViewById(R.id.gv);
@@ -102,13 +108,13 @@ public class ChooseProfilePictureActivity extends Activity {
                             case GET_CAMERA_IMAGE_REQUEST:
                                 //capture a big bitmap and store it in Uri
                                 Log.i(TAG, "take a photo");
-                                if (profilePictureUri == null) {
+                                if (cameraPictureUri == null) {
                                     Log.e(TAG, "profilePictureUri is null!");
                                 }
                                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
-                                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, profilePictureUri);
+                                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraPictureUri);
                                     startActivityForResult(cameraIntent, GET_CAMERA_IMAGE_REQUEST);
                                 } else {
                                     Log.e(TAG, "no memory card for image storage");
@@ -129,12 +135,12 @@ public class ChooseProfilePictureActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode) {
             case GET_GALLERY_IMAGE_REQUEST:
                 if (resultCode == RESULT_OK) {
                     Log.i(TAG, "got photo from gallery, about to start cropping");
-                    cropPicture(data.getData());
+                    galleryPictureUri = data.getData();
+                    cropPicture(galleryPictureUri, GALLERY_PICTURE);
                 } else {
                     Log.e(TAG, "failed to get pic from gallery");
                 }
@@ -143,7 +149,7 @@ public class ChooseProfilePictureActivity extends Activity {
                 if (resultCode == RESULT_OK) {
                     if (hasSdcard()) {
                         Log.i(TAG, "got photo from camera, about to start cropping");
-                        cropPicture(profilePictureUri);
+                        cropPicture(cameraPictureUri, CAMERA_PICTURE);
                     } else {
                         Log.e(TAG, "no sdcard for photo storage");
                         Toast.makeText(ChooseProfilePictureActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
@@ -153,13 +159,23 @@ public class ChooseProfilePictureActivity extends Activity {
                 }
                 break;
             // when photo cropping finishes
-            case CROP_IMAGE_REQUEST:
+            case CROP_GALLERY_IMAGE_REQUEST:
                 if (data != null) {
-                    // save the image cropped
-                    Log.i(TAG, "finish cropping, about to get back to AddContactActivity...");
-                    data.putExtra("profilePictureUri", profilePictureUri.toString());
-                    Log.i(TAG, profilePictureUri.toString());
-                    data.putExtra("type", USER_DEFINED_PROFILE_PICTURE);
+                    Log.i(TAG, "finish cropping gallery image, about to get back to AddContactActivity...");
+                    data.putExtra(PROFILE_PICTURE_URI, galleryPictureUri.toString());
+                    data.putExtra("type", GALLERY_PICTURE);
+                    setResult(RESULT_OK, data);
+                    finish();
+                } else {
+                    Log.e(TAG, "got a null from cropping");
+                }
+                break;
+            // when photo cropping finishes
+            case CROP_CAMERA_IMAGE_REQUEST:
+                if (data != null) {
+                    Log.i(TAG, "finish cropping camera image, about to get back to AddContactActivity...");
+                    data.putExtra(PROFILE_PICTURE_URI, cameraPictureUri.toString());
+                    data.putExtra("type", CAMERA_PICTURE);
                     setResult(RESULT_OK, data);
                     finish();
                 } else {
@@ -170,7 +186,7 @@ public class ChooseProfilePictureActivity extends Activity {
     }
 
     // crop picture
-    public void cropPicture(Uri uri) {
+    public void cropPicture(Uri uri, int type) {
         Log.i(TAG, "start photo zooming");
         Log.i(TAG, uri.toString());
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -181,13 +197,18 @@ public class ChooseProfilePictureActivity extends Activity {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // outputX outputY are pic's width and height in dp?
-        intent.putExtra("outputX", 300);
-        intent.putExtra("outputY", 300);
+        intent.putExtra("outputX", 400);
+        intent.putExtra("outputY", 400);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("return-data", false);
-        startActivityForResult(intent, CROP_IMAGE_REQUEST);
+
+        if (type == GALLERY_PICTURE) {
+            startActivityForResult(intent, CROP_GALLERY_IMAGE_REQUEST);
+        } else if (type == CAMERA_PICTURE) {
+            startActivityForResult(intent, CROP_CAMERA_IMAGE_REQUEST);
+        }
     }
 
     private static boolean hasSdcard() {
