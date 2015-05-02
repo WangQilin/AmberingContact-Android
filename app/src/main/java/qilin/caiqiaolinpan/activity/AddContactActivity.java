@@ -159,7 +159,9 @@ public class AddContactActivity extends Activity {
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
 
-        //todo: index, get the largest, plus 1
+        // read index number, used as the primary key
+        int indexNumber = ++DatabaseOperations.currentIndexNumber;
+
 
         if (name.equals("")) {
             Toast.makeText(this, "Contact name can't be null...", Toast.LENGTH_SHORT).show();
@@ -167,7 +169,7 @@ public class AddContactActivity extends Activity {
             Toast.makeText(this, "Contact phone number can't be null...", Toast.LENGTH_SHORT).show();
         } else {
             DatabaseOperations dop = new DatabaseOperations(context);
-            dop.putInformation(dop, 1, name, phone, dob, profilePictureId, profilePictureUri);
+            dop.putInformation(dop, indexNumber, name, phone, dob, profilePictureId, profilePictureUri);
         }
     }
 

@@ -13,7 +13,7 @@ public class TableData {
 
     public static abstract class TableInfo implements BaseColumns {
 
-        public static final String INDEX = "index_number";
+        public static final String INDEX = "index_number"; // primary key
         public static final String NAME = "name";
         public static final String PHONE = "phone";
         public static final String DATEOFBIRTH = "data_of_birth";

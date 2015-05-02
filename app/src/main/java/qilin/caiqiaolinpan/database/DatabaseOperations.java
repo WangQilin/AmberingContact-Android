@@ -16,6 +16,9 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     private final String TAG = this.getClass().getName();
 
+    // index number used as primary key
+    public static int currentIndexNumber = 0;
+
     public static final int database_version = 1;
 
     // create table not exists, and pay attention to SQLite data types
@@ -46,15 +49,18 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableInfo.DATEOFBIRTH, dateOfBirth);
         cv.put(TableInfo.PROFILEPICTUREID, profilePictureId);
         cv.put(TableInfo.PROFILEPICTUREURI, profilePictureUri);
+
         long result = sq.insert(TableInfo.TABLE_NAME, null, cv);
+
         Log.d(TAG, "One row inserted into database, result value:" + result);
-        Log.i(TAG, "information: " + "\n" +
-                "index: " + index + "\n" +
-                "name: " + name + "\n" +
-                "phone: " + phone + "\n" +
-                "date of birth: " + dateOfBirth + "\n" +
-                "profilePictureId: " + profilePictureId + "\n" +
-                "profilePictureUri: " + profilePictureUri);
+        Log.i(TAG, "##### information: " + "\n" +
+                "##### index_number: " + index + "\n" +
+                "##### name: " + name + "\n" +
+                "##### phone: " + phone + "\n" +
+                "##### date of birth: " + dateOfBirth + "\n" +
+                "##### profilePictureId: " + profilePictureId + "\n" +
+                "##### profilePictureUri: " + profilePictureUri + "\n" +
+                "##### current index number: " + currentIndexNumber);
     }
 
     public Cursor getInformation(DatabaseOperations dop) {
