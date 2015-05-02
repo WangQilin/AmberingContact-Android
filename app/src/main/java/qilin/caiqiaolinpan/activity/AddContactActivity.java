@@ -30,8 +30,8 @@ public class AddContactActivity extends Activity {
     private String name;
     private String phone;
     private String dob;
-    // todo: URI and int?
-    private int profilePicture;
+    private int profilePictureId = R.drawable.profile_0;
+    private String profilePictureUri;
 
     private EditText et_new_contact_name;
     private EditText et_new_contact_phone;
@@ -95,7 +95,9 @@ public class AddContactActivity extends Activity {
                 int profilePictureType = bundle.getInt("type");
                 switch (profilePictureType) {
                     case SYSTEM_PROFILE_PICTURE:
-                        iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
+                        profilePictureId = bundle.getInt("imageId");
+                        profilePictureUri = "";
+                        iv_choose_profile_picture.setImageResource(profilePictureId);
                         Log.i(TAG, "set system profile_picture");
                         break;
                     case GALLERY_PICTURE:
@@ -103,9 +105,11 @@ public class AddContactActivity extends Activity {
                         Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
                         Bundle extras = data.getExtras();
                         if (extras != null) {
-                            Uri profilePictureUri = Uri.parse(extras.getString(PROFILE_PICTURE_URI));
-                            Log.i(TAG, "profile picture uri: " + profilePictureUri.toString());
-                            Bitmap profilePictureBitmap = decodeUriToBitmap(profilePictureUri);
+                            Uri picUri = Uri.parse(extras.getString(PROFILE_PICTURE_URI));
+                            profilePictureUri = picUri.toString();
+                            profilePictureId = 0;
+                            Log.i(TAG, "profile picture uri: " + picUri.toString());
+                            Bitmap profilePictureBitmap = decodeUriToBitmap(picUri);
                             if (profilePictureBitmap != null) {
                                 iv_choose_profile_picture.setImageBitmap(profilePictureBitmap);
                                 Log.i(TAG, "set self-defined profile_picture");
@@ -115,7 +119,9 @@ public class AddContactActivity extends Activity {
                         }
                         break;
                     default:
-                        iv_choose_profile_picture.setImageResource(R.drawable.profile_0);
+                        profilePictureId = R.drawable.profile_0;
+                        profilePictureUri = "";
+                        iv_choose_profile_picture.setImageResource(profilePictureId);
                         Log.i(TAG, "set default profile picture");
                 }
             } else {
@@ -153,13 +159,15 @@ public class AddContactActivity extends Activity {
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
 
+        //todo: index, get the largest, plus 1
+
         if (name.equals("")) {
             Toast.makeText(this, "Contact name can't be null...", Toast.LENGTH_SHORT).show();
         } else if (phone.equals("")) {
             Toast.makeText(this, "Contact phone number can't be null...", Toast.LENGTH_SHORT).show();
         } else {
             DatabaseOperations dop = new DatabaseOperations(context);
-            dop.putInformation(dop, name, phone, dob, 0);
+            dop.putInformation(dop, 1, name, phone, dob, profilePictureId, profilePictureUri);
         }
     }
 

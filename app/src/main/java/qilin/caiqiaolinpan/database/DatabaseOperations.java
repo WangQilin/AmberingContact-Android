@@ -18,7 +18,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     public static final int database_version = 1;
 
-    public String CREATE_QUERY = "CREATE TABLE " + TableInfo.TABLE_NAME + " (" + TableInfo.NAME + " TEXT NOT NULL, " + TableInfo.PHONE + " TEXT NOT NULL, " + TableInfo.DATEOFBIRTH + " TEXT, " + TableInfo.PROFILEPICTURE + " INT);";
+    // create table not exists, and pay attention to SQLite data types
+    private String CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + TableInfo.TABLE_NAME + " (" + TableInfo.INDEX + " INTEGER, " + TableInfo.NAME + " TEXT, " + TableInfo.PHONE + " TEXT, " + TableInfo.DATEOFBIRTH + " TEXT, " + TableInfo.PROFILEPICTUREID + " INTEGER, " + TableInfo.PROFILEPICTUREURI + " TEXT);";
 
     public DatabaseOperations(Context context) {
         super(context, TableInfo.DATABASE_NAME, null, database_version);
@@ -29,7 +30,6 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_QUERY);
         Log.d(TAG, "table created");
-
     }
 
     @Override
@@ -37,20 +37,29 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     }
 
-    public void putInformation(DatabaseOperations dop, String name, String phone, String dateOfBirth, int profilePicture) {
+    public void putInformation(DatabaseOperations dop, int index, String name, String phone, String dateOfBirth, int profilePictureId, String profilePictureUri) {
         SQLiteDatabase sq = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put(TableInfo.INDEX, index);
         cv.put(TableInfo.NAME, name);
         cv.put(TableInfo.PHONE, phone);
         cv.put(TableInfo.DATEOFBIRTH, dateOfBirth);
-        cv.put(TableInfo.PROFILEPICTURE, profilePicture);
+        cv.put(TableInfo.PROFILEPICTUREID, profilePictureId);
+        cv.put(TableInfo.PROFILEPICTUREURI, profilePictureUri);
         long result = sq.insert(TableInfo.TABLE_NAME, null, cv);
         Log.d(TAG, "One row inserted into database, result value:" + result);
+        Log.i(TAG, "information: " + "\n" +
+                "index: " + index + "\n" +
+                "name: " + name + "\n" +
+                "phone: " + phone + "\n" +
+                "date of birth: " + dateOfBirth + "\n" +
+                "profilePictureId: " + profilePictureId + "\n" +
+                "profilePictureUri: " + profilePictureUri);
     }
 
     public Cursor getInformation(DatabaseOperations dop) {
         SQLiteDatabase sq = dop.getReadableDatabase();
-        String[] columns = {TableInfo.NAME, TableInfo.PHONE, TableInfo.DATEOFBIRTH, TableInfo.PROFILEPICTURE};
+        String[] columns = {TableInfo.INDEX, TableInfo.NAME, TableInfo.PHONE, TableInfo.DATEOFBIRTH, TableInfo.PROFILEPICTUREID, TableInfo.PROFILEPICTUREURI};
         Cursor cursor = sq.query(TableInfo.TABLE_NAME, columns, null, null, null, null, null);
         return cursor;
     }
