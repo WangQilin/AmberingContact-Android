@@ -20,7 +20,7 @@
             android:name=".activity.AddContactActivity"
             android:label="@string/title_activity_add_contact"></activity>
         <activity
-            android:name=".activity.ChooseAvatarActivity"
+            android:name=".activity.ChooseProfilePictureActivity"
             android:label="@string/title_activity_choose_avatar"></activity>
     </application>
 

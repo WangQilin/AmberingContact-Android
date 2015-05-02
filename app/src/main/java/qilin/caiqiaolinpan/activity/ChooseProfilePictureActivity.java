@@ -18,9 +18,7 @@ import android.widget.Toast;
 import qilin.caiqiaolinpan.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
-
-// todo: onBackpress on this page, app crashes, find a way to store the profile image
-public class ChooseAvatarActivity extends Activity {
+public class ChooseProfilePictureActivity extends Activity {
 
     private final String TAG = this.getClass().getName();
 
@@ -40,10 +38,10 @@ public class ChooseAvatarActivity extends Activity {
     };
 
     // Uri of the photo bitmap
-    private Uri avatarUri;
+    private Uri profilePictureUri;
 
-    // avatar file location
-    private static final String AVATAR_FILE_LOCATION = "file:///sdcard/avatar.jpg";
+    // profile picture file location
+    private static final String PROFILE_PICTURE_FILE_LOCATION = "file:///sdcard/profilePicture.jpg";
 
     // request codes
     private final static int IMAGE_REQUEST_CODE = 0;
@@ -51,9 +49,8 @@ public class ChooseAvatarActivity extends Activity {
     private final static int RESULT_REQUEST_CODE = 2;
 
     // result code
-    private final static int SYSTEM_AVATAR = 1;
-    private final static int USER_DEFINED_AVATAR = 2;
-    private final static int BACK_BUTTON_PRESSED = 3;
+    private final static int SYSTEM_PROFILE_PICTURE = 1;
+    private final static int USER_DEFINED_PROFILE_PICTURE = 2;
 
     // strings of the alert window
     String[] items = new String[]{"gallery", "camera"};
@@ -61,11 +58,11 @@ public class ChooseAvatarActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_avatar);
+        setContentView(R.layout.activity_choose_profile_picture);
 
-        avatarUri = Uri.parse(AVATAR_FILE_LOCATION);
+        profilePictureUri = Uri.parse(PROFILE_PICTURE_FILE_LOCATION);
 
-        ImageAdapter adapter = new ImageAdapter(ChooseAvatarActivity.this, imageIds);
+        ImageAdapter adapter = new ImageAdapter(ChooseProfilePictureActivity.this, imageIds);
         GridView gv = (GridView) findViewById(R.id.gv);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -78,7 +75,7 @@ public class ChooseAvatarActivity extends Activity {
                 } else {
                     Intent intent = new Intent();
                     intent.putExtra("imageId", imageIds[position]);
-                    setResult(SYSTEM_AVATAR, intent);
+                    setResult(SYSTEM_PROFILE_PICTURE, intent);
                     Log.i(TAG, "user chose a system pic as avatar");
                     finish();
                 }
@@ -104,13 +101,13 @@ public class ChooseAvatarActivity extends Activity {
                             case CAMERA_REQUEST_CODE:
                                 //capture a big bitmap and store it in Uri
                                 Log.i(TAG, "user chose to take a photo as avatar");
-                                if (avatarUri == null) {
+                                if (profilePictureUri == null) {
                                     Log.e(TAG, "avatar uri is null");
                                 }
                                 Intent intentFromCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
                                 if (hasSdcard()) {
-                                    intentFromCamera.putExtra(MediaStore.EXTRA_OUTPUT, avatarUri);
+                                    intentFromCamera.putExtra(MediaStore.EXTRA_OUTPUT, profilePictureUri);
                                 }
                                 startActivityForResult(intentFromCamera, CAMERA_REQUEST_CODE);
                                 break;
@@ -141,9 +138,9 @@ public class ChooseAvatarActivity extends Activity {
                 case CAMERA_REQUEST_CODE:
                     if (hasSdcard()) {
                         Log.i(TAG, "got photo from camera, about to start cropping");
-                        startPhotoZoom(avatarUri);
+                        startPhotoZoom(profilePictureUri);
                     } else {
-                        Toast.makeText(ChooseAvatarActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChooseProfilePictureActivity.this, "didn't find an SD card for image storage", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 // when photo cropping finishes
@@ -151,9 +148,9 @@ public class ChooseAvatarActivity extends Activity {
                     if (data != null) {
                         // save the image cropped
                         Log.i(TAG, "finish cropping, about to get back to AddContactActivity...");
-                        data.putExtra("avatarUri", avatarUri.toString());
-                        Log.i(TAG, avatarUri.toString());
-                        setResult(USER_DEFINED_AVATAR, data);
+                        data.putExtra("profilePictureUri", profilePictureUri.toString());
+                        Log.i(TAG, profilePictureUri.toString());
+                        setResult(USER_DEFINED_PROFILE_PICTURE, data);
                         finish();
                     }
                     break;
@@ -189,12 +186,5 @@ public class ChooseAvatarActivity extends Activity {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(BACK_BUTTON_PRESSED, null);
-        finish();
     }
 }

@@ -35,20 +35,19 @@ public class AddContactActivity extends Activity {
     private EditText et_new_contact_name;
     private EditText et_new_contact_phone;
     private EditText et_new_contact_dob;
-    private ImageView iv_choose_avatar;
+    private ImageView iv_choose_profile_picture;
 
-    private Calendar c;
+    private Calendar calendar;
 
     private Context context = this;
 
     // request code
     private final static int DATE_DIALOG = 1;
-    private final static int AVATAR = 1;
+    private final static int PROFILE_PICTURE = 2;
 
     // result code
-    private final static int SYSTEM_AVATAR = 1;
-    private final static int USER_DEFINED_AVATAR = 2;
-    private final static int BACK_BUTTON_PRESSED = 3;
+    private final static int SYSTEM_PROFILE_PICTURE = 1;
+    private final static int USER_DEFINED_PROFILE_PICTURE = 2;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -58,7 +57,7 @@ public class AddContactActivity extends Activity {
         et_new_contact_name = (EditText) findViewById(R.id.et_new_contact_name);
         et_new_contact_phone = (EditText) findViewById(R.id.et_new_contact_phone);
         et_new_contact_dob = (EditText) findViewById(R.id.et_new_contact_dob);
-        iv_choose_avatar = (ImageView) findViewById(R.id.iv_choose_avatar);
+        iv_choose_profile_picture = (ImageView) findViewById(R.id.iv_choose_profile_picture);
 
         // onClickListener will only respond when user presses twice
         et_new_contact_dob.setOnTouchListener(new View.OnTouchListener() {
@@ -69,19 +68,20 @@ public class AddContactActivity extends Activity {
             }
         });
 
-        // avatar onClick to allow user to choose another avatar
-        iv_choose_avatar.setOnClickListener(new View.OnClickListener() {
+        // profile_picture onClick to allow user to choose another profile_picture
+        iv_choose_profile_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddContactActivity.this, ChooseAvatarActivity.class);
-                startActivityForResult(intent, AVATAR);
+                Intent intent = new Intent(AddContactActivity.this, ChooseProfilePictureActivity.class);
+                startActivityForResult(intent, PROFILE_PICTURE);
             }
         });
     }
 
-    // back from ChooseAvatarActivity
+    // back from ChooseProfilePictureActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "got result");
         Log.i(TAG, "requestCode is" + requestCode);
         Log.i(TAG, "resultCode is" + resultCode);
@@ -91,27 +91,25 @@ public class AddContactActivity extends Activity {
 
             Bundle bundle = data.getExtras();
             switch (resultCode) {
-                case SYSTEM_AVATAR:
-                    iv_choose_avatar.setImageResource(bundle.getInt("imageId"));
-                    Log.i(TAG, "set system avatar");
+                case SYSTEM_PROFILE_PICTURE:
+                    iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
+                    Log.i(TAG, "set system profile_picture");
                     break;
-                case USER_DEFINED_AVATAR:
-                    Log.i(TAG, "on USER_DEFINED_AVATAR");
+                case USER_DEFINED_PROFILE_PICTURE:
+                    Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
                     Bundle extras = data.getExtras();
                     if (extras != null) {
                         Log.i(TAG, "extras not null");
-                        Uri avatarUri = Uri.parse(extras.getString("avatarUri"));
-                        Log.i(TAG, avatarUri.toString());
-                        Bitmap avatarBitmap = decodeUriToBitmap(avatarUri);
-                        iv_choose_avatar.setImageBitmap(avatarBitmap);
-                        Log.i(TAG, "set self-defined avatar");
+                        Uri profilePictureUri = Uri.parse(extras.getString("profilePictureUri"));
+                        Log.i(TAG, profilePictureUri.toString());
+                        Bitmap profilePictureBitmap = decodeUriToBitmap(profilePictureUri);
+                        iv_choose_profile_picture.setImageBitmap(profilePictureBitmap);
+                        Log.i(TAG, "set self-defined profile picture");
                     }
                     break;
-                case BACK_BUTTON_PRESSED:
-                    recreate();
                 default:
-                    iv_choose_avatar.setImageResource(R.drawable.profile_0);
-                    Log.i(TAG, "set default avatar");
+                    iv_choose_profile_picture.setImageResource(R.drawable.profile_0);
+                    Log.i(TAG, "set default profile picture");
             }
         }
 
@@ -123,7 +121,7 @@ public class AddContactActivity extends Activity {
         Dialog dialog = null;
         switch (id) {
             case DATE_DIALOG:
-                c = Calendar.getInstance();
+                calendar = Calendar.getInstance();
                 dialog = new DatePickerDialog(
                         this, new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker dp, int year, int month, int dayOfMonth) {
@@ -131,9 +129,9 @@ public class AddContactActivity extends Activity {
 
                     }
                 },
-                        c.get(Calendar.YEAR),
-                        c.get(Calendar.MONTH),
-                        c.get(Calendar.DAY_OF_MONTH)
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
                 );
                 break;
         }
