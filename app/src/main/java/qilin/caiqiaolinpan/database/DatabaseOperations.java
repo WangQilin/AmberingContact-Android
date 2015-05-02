@@ -14,7 +14,7 @@ import qilin.caiqiaolinpan.database.TableData.TableInfo;
  */
 public class DatabaseOperations extends SQLiteOpenHelper {
 
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "DatabaseOperations";
 
     // index number used as primary key
     public static int currentIndexNumber = 0;

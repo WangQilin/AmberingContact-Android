@@ -1,6 +1,5 @@
 package qilin.caiqiaolinpan.activity;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +9,14 @@ import android.widget.Toast;
 import qilin.caiqiaolinpan.R;
 
 public class MainActivity extends Activity {
+
+    private static final String TAG = "MainActivity";
+
     private long lastBackPressTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // todo: read from SQLite and initialize ListView, put a plus sign at the last row
-
+        // todo: read from SQLite and initialize ListView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }

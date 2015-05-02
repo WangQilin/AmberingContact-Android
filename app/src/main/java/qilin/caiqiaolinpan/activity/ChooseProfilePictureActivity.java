@@ -20,7 +20,7 @@ import qilin.caiqiaolinpan.R;
 
 public class ChooseProfilePictureActivity extends Activity {
 
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "ChoosePicActivity";
 
     private final int[] imageIds = {
             R.drawable.take_a_photo,
@@ -76,14 +76,12 @@ public class ChooseProfilePictureActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // if the take_a_photo pic is pressed, allow user to choose a pic from gallery or camera
                 if (position == 0) {
-                    Log.i(TAG, "user chose to use a self-defined pic as profile pic");
                     showDialog();
                 } else {
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("type", SYSTEM_PROFILE_PICTURE);
                     returnIntent.putExtra("imageId", imageIds[position]);
                     setResult(RESULT_OK, returnIntent);
-                    Log.i(TAG, "user chose a system pic as avatar");
                     finish();
                 }
             }
@@ -99,7 +97,6 @@ public class ChooseProfilePictureActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case GET_GALLERY_IMAGE_REQUEST:
-                                Log.i(TAG, "choose a pic from gallery");
                                 Intent intentFromGallery = new Intent();
                                 intentFromGallery.setType("image/*");
                                 intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
@@ -107,9 +104,8 @@ public class ChooseProfilePictureActivity extends Activity {
                                 break;
                             case GET_CAMERA_IMAGE_REQUEST:
                                 //capture a big bitmap and store it in Uri
-                                Log.i(TAG, "take a photo");
                                 if (cameraPictureUri == null) {
-                                    Log.e(TAG, "profilePictureUri is null!");
+                                    Log.e(TAG, "is null!");
                                 }
                                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 // check if memory card is applicable for image storage
@@ -138,7 +134,7 @@ public class ChooseProfilePictureActivity extends Activity {
         switch (requestCode) {
             case GET_GALLERY_IMAGE_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    Log.i(TAG, "got photo from gallery, about to start cropping");
+                    // todo: it crops the original pic....mustn't do that
                     galleryPictureUri = data.getData();
                     cropPicture(galleryPictureUri, GALLERY_PICTURE);
                 } else {
@@ -148,7 +144,6 @@ public class ChooseProfilePictureActivity extends Activity {
             case GET_CAMERA_IMAGE_REQUEST:
                 if (resultCode == RESULT_OK) {
                     if (hasSdcard()) {
-                        Log.i(TAG, "got photo from camera, about to start cropping");
                         cropPicture(cameraPictureUri, CAMERA_PICTURE);
                     } else {
                         Log.e(TAG, "no sdcard for photo storage");
@@ -161,25 +156,23 @@ public class ChooseProfilePictureActivity extends Activity {
             // when photo cropping finishes
             case CROP_GALLERY_IMAGE_REQUEST:
                 if (data != null) {
-                    Log.i(TAG, "finish cropping gallery image, about to get back to AddContactActivity...");
                     data.putExtra(PROFILE_PICTURE_URI, galleryPictureUri.toString());
                     data.putExtra("type", GALLERY_PICTURE);
                     setResult(RESULT_OK, data);
                     finish();
                 } else {
-                    Log.e(TAG, "got a null from cropping");
+                    Log.e(TAG, "got a null from cropping gallery pic");
                 }
                 break;
             // when photo cropping finishes
             case CROP_CAMERA_IMAGE_REQUEST:
                 if (data != null) {
-                    Log.i(TAG, "finish cropping camera image, about to get back to AddContactActivity...");
                     data.putExtra(PROFILE_PICTURE_URI, cameraPictureUri.toString());
                     data.putExtra("type", CAMERA_PICTURE);
                     setResult(RESULT_OK, data);
                     finish();
                 } else {
-                    Log.e(TAG, "got a null from cropping");
+                    Log.e(TAG, "got a null from cropping camera pic");
                 }
                 break;
         }
@@ -187,8 +180,7 @@ public class ChooseProfilePictureActivity extends Activity {
 
     // crop picture
     public void cropPicture(Uri uri, int type) {
-        Log.i(TAG, "start photo zooming");
-        Log.i(TAG, uri.toString());
+        Log.d(TAG, "cropping uri: " + uri.toString());
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         // set to crop

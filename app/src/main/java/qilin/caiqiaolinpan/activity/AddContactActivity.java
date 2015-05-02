@@ -25,7 +25,7 @@ import qilin.caiqiaolinpan.database.DatabaseOperations;
 
 public class AddContactActivity extends Activity {
 
-    private final String TAG = this.getClass().getName();
+    private static final String TAG = "AddContactActivity";
 
     private String name;
     private String phone;
@@ -87,10 +87,8 @@ public class AddContactActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "got result from ChooseProfilePictureActivity");
         if (requestCode == PROFILE_PICTURE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Log.i(TAG, "resultCode is ok");
                 Bundle bundle = data.getExtras();
                 int profilePictureType = bundle.getInt("type");
                 switch (profilePictureType) {
@@ -98,21 +96,17 @@ public class AddContactActivity extends Activity {
                         profilePictureId = bundle.getInt("imageId");
                         profilePictureUri = "";
                         iv_choose_profile_picture.setImageResource(profilePictureId);
-                        Log.i(TAG, "set system profile_picture");
                         break;
                     case GALLERY_PICTURE:
                     case CAMERA_PICTURE:
-                        Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
                         Bundle extras = data.getExtras();
                         if (extras != null) {
                             Uri picUri = Uri.parse(extras.getString(PROFILE_PICTURE_URI));
                             profilePictureUri = picUri.toString();
                             profilePictureId = 0;
-                            Log.i(TAG, "profile picture uri: " + picUri.toString());
                             Bitmap profilePictureBitmap = decodeUriToBitmap(picUri);
                             if (profilePictureBitmap != null) {
                                 iv_choose_profile_picture.setImageBitmap(profilePictureBitmap);
-                                Log.i(TAG, "set self-defined profile_picture");
                             } else {
                                 Log.e(TAG, "failed to decode Uri to Bitmap");
                             }
@@ -122,10 +116,10 @@ public class AddContactActivity extends Activity {
                         profilePictureId = R.drawable.profile_0;
                         profilePictureUri = "";
                         iv_choose_profile_picture.setImageResource(profilePictureId);
-                        Log.i(TAG, "set default profile picture");
+                        Log.d(TAG, "set DEFAULT profile picture");
                 }
             } else {
-                Log.i(TAG, "resultCode is not OK");
+                Log.d(TAG, "resultCode is not OK");
             }
         }
     }
@@ -178,8 +172,7 @@ public class AddContactActivity extends Activity {
     }
 
     private Bitmap decodeUriToBitmap(Uri uri) {
-        Log.i(TAG, "decoding URI: " + uri.toString());
-
+        Log.d(TAG, "decoding URI: " + uri.toString());
         Bitmap bitmap = null;
         try {
             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
