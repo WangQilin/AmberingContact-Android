@@ -48,7 +48,7 @@ public class ChooseProfilePictureActivity extends Activity {
     private final static int CAMERA_REQUEST_CODE = 1;
     private final static int RESULT_REQUEST_CODE = 2;
 
-    // result code
+    // return profile picture type
     private final static int SYSTEM_PROFILE_PICTURE = 1;
     private final static int USER_DEFINED_PROFILE_PICTURE = 2;
 
@@ -73,9 +73,11 @@ public class ChooseProfilePictureActivity extends Activity {
                     Log.i(TAG, "user chose to use a self-defined pic as avatar");
                     showDialog();
                 } else {
-                    Intent intent = new Intent();
-                    intent.putExtra("imageId", imageIds[position]);
-                    setResult(SYSTEM_PROFILE_PICTURE, intent);
+                    Intent returnIntent = new Intent();
+
+                    returnIntent.putExtra("type", SYSTEM_PROFILE_PICTURE);
+                    returnIntent.putExtra("imageId", imageIds[position]);
+                    setResult(RESULT_OK, returnIntent);
                     Log.i(TAG, "user chose a system pic as avatar");
                     finish();
                 }

@@ -30,6 +30,7 @@ public class AddContactActivity extends Activity {
     private String name;
     private String phone;
     private String dob;
+    // todo: URI and int?
     private int profilePicture;
 
     private EditText et_new_contact_name;
@@ -42,10 +43,10 @@ public class AddContactActivity extends Activity {
     private Context context = this;
 
     // request code
-    private final static int DATE_DIALOG = 1;
-    private final static int PROFILE_PICTURE = 2;
+    private final static int DATE_DIALOG_REQUEST = 1;
+    private final static int PROFILE_PICTURE_REQUEST = 2;
 
-    // result code
+    // return profile picture type
     private final static int SYSTEM_PROFILE_PICTURE = 1;
     private final static int USER_DEFINED_PROFILE_PICTURE = 2;
 
@@ -59,11 +60,11 @@ public class AddContactActivity extends Activity {
         et_new_contact_dob = (EditText) findViewById(R.id.et_new_contact_dob);
         iv_choose_profile_picture = (ImageView) findViewById(R.id.iv_choose_profile_picture);
 
-        // onClickListener will only respond when user presses twice
+        // onClickListener will only respond when user presses twice, so use OnTouchListener
         et_new_contact_dob.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                showDialog(DATE_DIALOG);
+                showDialog(DATE_DIALOG_REQUEST);
                 return false;
             }
         });
@@ -73,24 +74,24 @@ public class AddContactActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddContactActivity.this, ChooseProfilePictureActivity.class);
-                startActivityForResult(intent, PROFILE_PICTURE);
+                startActivityForResult(intent, PROFILE_PICTURE_REQUEST);
             }
         });
     }
 
-    // back from ChooseProfilePictureActivity
+    // back from ChooseProfilePictureActivity, request code is PROFILE_PICTURE_REQUEST
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "got result");
-        Log.i(TAG, "requestCode is" + requestCode);
-        Log.i(TAG, "resultCode is" + resultCode);
+        Log.i(TAG, "got result from ChooseProfilePictureActivity");
 
         if (resultCode == RESULT_OK) {
-            Log.i(TAG, "result ok");
+            Log.i(TAG, "resultCode is ok");
 
             Bundle bundle = data.getExtras();
-            switch (resultCode) {
+            int profilePictureType = bundle.getInt("type");
+
+            switch (profilePictureType) {
                 case SYSTEM_PROFILE_PICTURE:
                     iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
                     Log.i(TAG, "set system profile_picture");
@@ -120,7 +121,7 @@ public class AddContactActivity extends Activity {
     protected Dialog onCreateDialog(int id) {
         Dialog dialog = null;
         switch (id) {
-            case DATE_DIALOG:
+            case DATE_DIALOG_REQUEST:
                 calendar = Calendar.getInstance();
                 dialog = new DatePickerDialog(
                         this, new DatePickerDialog.OnDateSetListener() {
