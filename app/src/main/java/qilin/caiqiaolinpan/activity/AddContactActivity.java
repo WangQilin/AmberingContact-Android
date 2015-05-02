@@ -84,36 +84,41 @@ public class AddContactActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "got result from ChooseProfilePictureActivity");
+        if (requestCode == PROFILE_PICTURE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.i(TAG, "resultCode is ok");
 
-        if (resultCode == RESULT_OK) {
-            Log.i(TAG, "resultCode is ok");
+                Bundle bundle = data.getExtras();
+                int profilePictureType = bundle.getInt("type");
 
-            Bundle bundle = data.getExtras();
-            int profilePictureType = bundle.getInt("type");
-
-            switch (profilePictureType) {
-                case SYSTEM_PROFILE_PICTURE:
-                    iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
-                    Log.i(TAG, "set system profile_picture");
-                    break;
-                case USER_DEFINED_PROFILE_PICTURE:
-                    Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
-                    Bundle extras = data.getExtras();
-                    if (extras != null) {
-                        Log.i(TAG, "extras not null");
-                        Uri profilePictureUri = Uri.parse(extras.getString("profilePictureUri"));
-                        Log.i(TAG, profilePictureUri.toString());
-                        Bitmap profilePictureBitmap = decodeUriToBitmap(profilePictureUri);
-                        iv_choose_profile_picture.setImageBitmap(profilePictureBitmap);
-                        Log.i(TAG, "set self-defined profile picture");
-                    }
-                    break;
-                default:
-                    iv_choose_profile_picture.setImageResource(R.drawable.profile_0);
-                    Log.i(TAG, "set default profile picture");
+                switch (profilePictureType) {
+                    case SYSTEM_PROFILE_PICTURE:
+                        iv_choose_profile_picture.setImageResource(bundle.getInt("imageId"));
+                        Log.i(TAG, "set system profile_picture");
+                        break;
+                    case USER_DEFINED_PROFILE_PICTURE:
+                        Log.i(TAG, "on USER_DEFINED_PROFILE_PICTURE");
+                        Bundle extras = data.getExtras();
+                        if (extras != null) {
+                            Uri profilePictureUri = Uri.parse(extras.getString("profilePictureUri"));
+                            Log.i(TAG, "profile picture uri: " + profilePictureUri.toString());
+                            Bitmap profilePictureBitmap = decodeUriToBitmap(profilePictureUri);
+                            if (profilePictureBitmap != null) {
+                                iv_choose_profile_picture.setImageBitmap(profilePictureBitmap);
+                                Log.i(TAG, "set self-defined profile_picture");
+                            } else {
+                                Log.e(TAG, "failed to decode Uri to Bitmap");
+                            }
+                        }
+                        break;
+                    default:
+                        iv_choose_profile_picture.setImageResource(R.drawable.profile_0);
+                        Log.i(TAG, "set default profile picture");
+                }
+            } else {
+                Log.i(TAG, "resultCode is not OK");
             }
         }
-
     }
 
 
@@ -139,7 +144,7 @@ public class AddContactActivity extends Activity {
         return dialog;
     }
 
-    // on 'done' button click
+    // on 'add' button click
     public void addContact(View v) {
         name = et_new_contact_name.getText().toString();
         phone = et_new_contact_phone.getText().toString();
@@ -156,11 +161,13 @@ public class AddContactActivity extends Activity {
     }
 
     private Bitmap decodeUriToBitmap(Uri uri) {
+        Log.i(TAG, "decoding URI: " + uri.toString());
+
         Bitmap bitmap = null;
         try {
             bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "failed to decode Uri to Bitmap, file not found");
+            Log.e(TAG, "failed to decode Uri to Bitmap, FileNotFoundException: " + e);
             return null;
         }
         return bitmap;
@@ -169,22 +176,10 @@ public class AddContactActivity extends Activity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-
-        name = et_new_contact_name.getText().toString();
-        phone = et_new_contact_phone.getText().toString();
-        dob = et_new_contact_dob.getText().toString();
-
-        savedInstanceState.putString("name", name);
-        savedInstanceState.putString("phone", phone);
-        savedInstanceState.putString("dob", dob);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
-        name = savedInstanceState.getString("name");
-        phone = savedInstanceState.getString("phone");
-        dob = savedInstanceState.getString("dob");
     }
 }
