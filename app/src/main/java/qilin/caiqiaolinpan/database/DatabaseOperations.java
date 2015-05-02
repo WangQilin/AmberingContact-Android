@@ -22,7 +22,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public static final int database_version = 1;
 
     // create table not exists, and pay attention to SQLite data types
-    private String CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " + TableInfo.TABLE_NAME + " (" + TableInfo.INDEX + " INTEGER, " + TableInfo.NAME + " TEXT, " + TableInfo.PHONE + " TEXT, " + TableInfo.DATEOFBIRTH + " TEXT, " + TableInfo.PROFILEPICTUREID + " INTEGER, " + TableInfo.PROFILEPICTUREURI + " TEXT);";
+    private String CREATE_QUERY = "CREATE TABLE IF NOT EXISTS " +
+            TableInfo.TABLE_NAME + " (" +
+            TableInfo.INDEX + " INTEGER NOT NULL, " +
+            TableInfo.NAME + " TEXT NOT NULL, " +
+            TableInfo.PHONE + " TEXT NOT NULL, " +
+            TableInfo.DATEOFBIRTH + " TEXT, " +
+            TableInfo.PROFILEPICTUREID + " INTEGER, " +
+            TableInfo.PROFILEPICTUREURI + " TEXT);";
 
     public DatabaseOperations(Context context) {
         super(context, TableInfo.DATABASE_NAME, null, database_version);

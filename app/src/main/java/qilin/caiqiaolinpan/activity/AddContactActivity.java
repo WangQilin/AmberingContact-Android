@@ -171,6 +171,10 @@ public class AddContactActivity extends Activity {
             DatabaseOperations dop = new DatabaseOperations(context);
             dop.putInformation(dop, indexNumber, name, phone, dob, profilePictureId, profilePictureUri);
         }
+
+        Toast.makeText(this, "Contact added successfully", Toast.LENGTH_SHORT).show();
+        // go back to main activity
+        finish();
     }
 
     private Bitmap decodeUriToBitmap(Uri uri) {
