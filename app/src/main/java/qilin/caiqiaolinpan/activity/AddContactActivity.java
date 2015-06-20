@@ -18,7 +18,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import qilin.caiqiaolinpan.R;
 import qilin.caiqiaolinpan.database.DatabaseOperations;
@@ -152,22 +155,33 @@ public class AddContactActivity extends Activity {
         phone = et_new_contact_phone.getText().toString();
         dob = et_new_contact_dob.getText().toString();
 
-        // read index number, used as the primary key
-        int indexNumber = ++DatabaseOperations.currentIndexNumber;
-
-
-        if (name.equals("")) {
-            Toast.makeText(this, "Contact name can't be null...", Toast.LENGTH_SHORT).show();
-        } else if (phone.equals("")) {
-            Toast.makeText(this, "Contact phone number can't be null...", Toast.LENGTH_SHORT).show();
-        } else {
-            DatabaseOperations dop = new DatabaseOperations(context);
-            dop.putInformation(dop, indexNumber, name, phone, dob, profilePictureId, profilePictureUri);
+        // if dob is not null, convert it to a date String
+        if (dob.equals("")) {
+            try {
+                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dob);
+                dob = date.toString();
+            } catch (ParseException e) {
+                Log.e(TAG, "error converting date from String to Date");
+                e.printStackTrace();
+            }
         }
 
-        Toast.makeText(this, "Contact added successfully", Toast.LENGTH_SHORT).show();
-        // go back to main activity
-        finish();
+        if (name.equals("")) {
+            Toast.makeText(this, "Contact name can't be empty...", Toast.LENGTH_SHORT).show();
+            et_new_contact_name.requestFocus();
+        } else if (phone.equals("")) {
+            Toast.makeText(this, "Contact phone number can't be empty...", Toast.LENGTH_SHORT).show();
+            et_new_contact_phone.requestFocus();
+        } else {
+            // if the required fields are filled with data
+            // read index number, used as the primary key
+            int indexNumber = ++DatabaseOperations.currentIndexNumber;
+            DatabaseOperations dop = new DatabaseOperations(context);
+            dop.putInformation(dop, indexNumber, name, phone, dob, profilePictureId, profilePictureUri);
+            Toast.makeText(this, "Contact added successfully", Toast.LENGTH_SHORT).show();
+            // go back to MainActivity
+            finish();
+        }
     }
 
     private Bitmap decodeUriToBitmap(Uri uri) {
