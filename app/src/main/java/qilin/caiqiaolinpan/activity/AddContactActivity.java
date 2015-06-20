@@ -38,8 +38,6 @@ public class AddContactActivity extends Activity {
     private EditText et_new_contact_dob;
     private ImageView iv_choose_profile_picture;
 
-    private Calendar calendar;
-
     private Context context = this;
 
     // request code
@@ -124,27 +122,28 @@ public class AddContactActivity extends Activity {
         }
     }
 
-
     @Override
     protected Dialog onCreateDialog(int id) {
-        Dialog dialog = null;
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                et_new_contact_dob.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+            }
+        };
+
         switch (id) {
             case DATE_DIALOG_REQUEST:
-                calendar = Calendar.getInstance();
-                dialog = new DatePickerDialog(
-                        this, new DatePickerDialog.OnDateSetListener() {
-                    public void onDateSet(DatePicker dp, int year, int month, int dayOfMonth) {
-                        et_new_contact_dob.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
-
-                    }
-                },
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                        onDateSetListener,
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)
                 );
-                break;
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                return datePickerDialog;
         }
-        return dialog;
+        return null;
     }
 
     // on 'add' button click
