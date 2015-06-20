@@ -15,7 +15,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import qilin.caiqiaolinpan.ImageAdapter;
+import qilin.caiqiaolinpan.adapter.ImageAdapter;
 import qilin.caiqiaolinpan.R;
 
 public class ChooseProfilePictureActivity extends Activity {

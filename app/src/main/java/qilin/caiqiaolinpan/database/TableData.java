@@ -8,7 +8,6 @@ import android.provider.BaseColumns;
 public class TableData {
 
     public TableData() {
-
     }
 
     public static abstract class TableInfo implements BaseColumns {
@@ -23,7 +22,5 @@ public class TableData {
         public static final String DATABASE_NAME = "contact_info_database";
         public static final String TABLE_NAME = "contact_info_table";
 
-
     }
-
 }
